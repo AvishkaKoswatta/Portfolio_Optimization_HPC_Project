@@ -5,5 +5,5 @@ Pick the best combination of stock weights from a list of 5 stocks() to:
     Maximize return
     Maximize Sharpe ratio (return adjusted for risk)
 
-gcc -fopenmp parallel.c -o parallel -lm
-time ./parallel
+gcc -fopenmp openmp.c -o openmp -lm
+time ./openmp

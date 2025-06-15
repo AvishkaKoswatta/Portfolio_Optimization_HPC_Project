@@ -44,6 +44,8 @@ int main() {
     double prices[MAX_DAYS][MAX_STOCKS];
     double returns[MAX_DAYS-1][MAX_STOCKS];
     int day_count = 0;
+    char *stock_names[MAX_STOCKS] = {"AAPL", "AMZN", "GOOGL", "JPM", "MSFT"};
+
 
     // Read header
     if (fgets(line, sizeof(line), fp)) {
@@ -173,10 +175,17 @@ int main() {
         printf("Stock %d weight: %.4f\n", i+1, weights_max_return[i]);
     printf("Return: %.4f\n", best_max_return);
 
-    printf("\nMaximum Sharpe Ratio Portfolio:\n");
-    for (int i = 0; i < n_stocks; i++)
-        printf("Stock %d weight: %.4f\n", i+1, weights_max_sharpe[i]);
-    printf("Sharpe Ratio: %.4f\n", best_max_sharpe);
+    // printf("\nMaximum Sharpe Ratio Portfolio:\n");
+    // for (int i = 0; i < n_stocks; i++)
+    //     printf("Stock %d weight: %.4f\n", i+1, weights_max_sharpe[i]);
+    // printf("Sharpe Ratio: %.4f\n", best_max_sharpe);
+
+    printf("\nMaximum Sharpe Ratio Portfolio Allocation:\n");
+for (int i = 0; i < n_stocks; i++) {
+    printf("%-6s: %.2f%%\n", stock_names[i], weights_max_sharpe[i] * 100);
+}
+// printf("Sharpe Ratio: %.4f\n", best_max_sharpe);
+
 
     return 0;
 }
