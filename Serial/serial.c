@@ -62,5 +62,17 @@ int main(){
         mean_returns[j]=sum/return_days;
     }
 
+    //
+    double cov[MAX_STOCKS][MAX_STOCKS];
+    for (int i = 0; i < stocks; i++) {
+        for (int j = 0; j < stocks; j++) {
+            double cov_ij = 0.0;
+            for (int k = 0; k < return_days; k++) {
+                cov_ij += (returns[k][i] - mean_returns[i]) * (returns[k][j] - mean_returns[j]);
+            }
+            cov[i][j] = cov_ij / (return_days - 1);
+        }
+    }
+
 }
 

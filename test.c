@@ -16,7 +16,7 @@ void normalize_weights(double weights[], int n) {
     for (int i = 0; i < n; i++) weights[i] /= sum;
 }
 
-double portfolio_return(double weights[], double returns[], int n) {
+double portfolio_return(double weights[], double returns[], int n) { //n=5
     double port_return = 0.0;
     for (int i = 0; i < n; i++) port_return += weights[i] * returns[i];
     return port_return;
@@ -117,22 +117,22 @@ int main() {
         }
     }
 
-    // Annualize mean returns and covariance matrix
+    // Annualize mean returns and covariance matrix. for a year 252 trading days
     for (int i = 0; i < n_stocks; i++) {
-        mean_returns[i] *= TRADING_DAYS;
+        mean_returns[i] *= TRADING_DAYS; //for yearly
         for (int j = 0; j < n_stocks; j++) {
-            cov[i][j] *= TRADING_DAYS;
+            cov[i][j] *= TRADING_DAYS; // standard in finance
         }
     }
 
     // Monte Carlo portfolio simulation
     srand(time(NULL));
 
-    double best_min_risk = 1e9;
+    double best_min_risk = 1e9; // this is a much latger number. during first simulation this number will be replaced.
     double best_max_return = -1e9;
     double best_max_sharpe = -1e9;
 
-    double weights_min_risk[MAX_STOCKS];
+    double weights_min_risk[MAX_STOCKS]; // weights that give minimum risk
     double weights_max_return[MAX_STOCKS];
     double weights_max_sharpe[MAX_STOCKS];
 
@@ -151,7 +151,7 @@ int main() {
 
         if (risk < best_min_risk) {
             best_min_risk = risk;
-            memcpy(weights_min_risk, weights, sizeof(weights));
+            memcpy(weights_min_risk, weights, sizeof(weights)); //compare current portfolio with previous 
         }
 
         if (ret > best_max_return) {

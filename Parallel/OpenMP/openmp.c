@@ -186,7 +186,7 @@
 
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
-#define SIMULATIONS 100000
+#define SIMULATIONS 100000 //here simulations will be divide for threads
 #define RISK_FREE_RATE 0.01
 #define TRADING_DAYS 252
 
@@ -317,7 +317,7 @@ int main() {
         double local_weights_max_return[MAX_STOCKS];
         double local_weights_max_sharpe[MAX_STOCKS];
 
-        unsigned int seed = time(NULL) ^ omp_get_thread_num();
+        unsigned int seed = time(NULL) ^ omp_get_thread_num();//avoid generating same sequence of random weights by threads
 
         #pragma omp for
         for (int sim = 0; sim < SIMULATIONS; sim++) {
