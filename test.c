@@ -7,7 +7,7 @@
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
 #define SIMULATIONS 100000
-#define RISK_FREE_RATE 0.01
+#define RISK_FREE_RATE 0.01 // A fixed value used in sharp ratio
 #define TRADING_DAYS 252
 
 void normalize_weights(double weights[], int n) {

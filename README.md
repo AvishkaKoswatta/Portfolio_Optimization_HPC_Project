@@ -1,10 +1,12 @@
+![Portfolio Optimization](https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Portfolio_Optimization_Example.png/640px-Portfolio_Optimization_Example.png)
+
 ## Portfolio optimization using Monte Carlo simulation in C
 
-This project performs portfolio optimization using the Monte Carlo simulation technique, written in C. It aims to identify the optimal allocation of assets (stocks) that either minimizes risk, maximizes return, or maximizes the Sharpe ratio.
+This project performs portfolio optimization using the Monte Carlo simulation technique. It aims to identify the optimal allocation of assets (stocks) that minimizes risk, maximizes return, or maximizes the Sharpe ratio.
 
 ---
 
-## 1. About the Project
+## 1. About the Serial Version
 
 - **Number of Stocks**: 5  
   (Apple - AAPL, Amazon - AMZN, Google - GOOGL, JPMorgan - JPM, Microsoft - MSFT)
@@ -15,9 +17,6 @@ This project performs portfolio optimization using the Monte Carlo simulation te
   `date,AAPL,AMZN,GOOGL,JPM,MSFT`
 
 - **Simulation Count**: 100,000 randomly generated portfolios
-
-- **Language**: C  
-- **File**: `main.c`
 
 ---
 
@@ -97,8 +96,7 @@ After 100,000 simulations, the best portfolios for each criterion are reported.
 
 ### Steps
 
-1. **Place your CSV file** with the historical stock data in the `Data/` directory.  
-   Example filename: `new_all_stocks_5yr.csv`
+1. **Place CSV file** with the historical stock data in the `Data/` directory.  
 
 2. **Compile the code:**
    ```bash
@@ -110,42 +108,8 @@ After 100,000 simulations, the best portfolios for each criterion are reported.
    ./portfolio
    ```
 
-4. **Output:**
-   - Portfolio with minimum risk
-   - Portfolio with maximum return
-   - Portfolio with highest Sharpe ratio
-   - Each with their respective weight allocations
-
 ---
 
-## 5. Output Example
-
-```
-Minimum Risk Portfolio:
-Stock 1 weight: 0.17
-Stock 2 weight: 0.18
-...
-Risk (Std Dev): 0.1421
-
-Maximum Return Portfolio:
-Stock 1 weight: 0.45
-...
-Return: 0.2217
-
-Maximum Sharpe Ratio Portfolio Allocation:
-AAPL  : 15.23%
-AMZN  : 21.14%
-GOOGL : 30.45%
-JPM   : 12.11%
-MSFT  : 21.07%
-```
-
----
-
-## 6. Notes
-
-- The number of stocks and days are fixed via `#define MAX_STOCKS` and `MAX_DAYS`.
-- Modify `SIMULATIONS` to increase or decrease simulation accuracy.
-- Ensure that the CSV data has no missing values for accurate computation.
-
----
+## 2. About the OpenMP(Parallel) Version
+gcc -fopenmp openmp.c -o openmp -lm
+./openmp
