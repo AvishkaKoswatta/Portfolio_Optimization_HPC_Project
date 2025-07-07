@@ -111,3 +111,10 @@ After 100,000 simulations, the best portfolios for each criterion are reported.
 ## 2. About the OpenMP(Parallel) Version
 gcc -fopenmp openmp.c -o openmp -lm
 ./openmp
+
+
+
+
+
+
+gcc serial.c -o /home/avishka/HPC/project/portfolio/Portfolio_Optimization_HPC_Project/executables/serial -lm
