@@ -186,7 +186,7 @@
 
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
-#define SIMULATIONS 100000 //here simulations will be divide for threads
+#define SIMULATIONS 100000 //simulations will be divide for threads
 #define RISK_FREE_RATE 0.01
 #define TRADING_DAYS 252
 
@@ -211,6 +211,7 @@ double portfolio_variance(double weights[], double cov[][MAX_STOCKS], int n) {
 }
 
 int main() {
+    double start_time = omp_get_wtime();
     FILE *fp = fopen("/home/avishka/HPC/project/Portfolio_Optimization_HPC_Project/Data/new_all_stocks_5yr.csv", "r");
     if (!fp) {
         printf("Error opening file\n");
@@ -225,9 +226,9 @@ int main() {
     double returns[MAX_DAYS - 1][MAX_STOCKS];
     int day_count = 0;
 
-    // Read header
+    
     if (fgets(line, sizeof(line), fp)) {
-        token = strtok(line, ","); // Skip "date"
+        token = strtok(line, ","); 
         while ((token = strtok(NULL, ",")) != NULL) {
             n_stocks++;
             if (n_stocks > MAX_STOCKS) {
@@ -317,7 +318,8 @@ int main() {
         double local_weights_max_return[MAX_STOCKS];
         double local_weights_max_sharpe[MAX_STOCKS];
 
-        unsigned int seed = time(NULL) ^ omp_get_thread_num();//avoid generating same sequence of random weights by threads
+        //avoid generating same sequence of random weights by threads
+        unsigned int seed = time(NULL) ^ omp_get_thread_num();
 
         #pragma omp for
         for (int sim = 0; sim < SIMULATIONS; sim++) {
@@ -368,6 +370,8 @@ int main() {
         printf("%-6s: %.2f%%\n", stock_names[i], weights_max_sharpe[i] * 100);
     }
     // printf("Sharpe Ratio: %.4f\n", best_max_sharpe);
+    double end_time = omp_get_wtime(); // Stop timer
+    printf("\nTotal Execution Time: %.6f seconds\n", end_time - start_time);
 
     return 0;
 }

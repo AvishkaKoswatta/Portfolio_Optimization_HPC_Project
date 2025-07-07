@@ -37,7 +37,7 @@ int main() {
         return 1;
     }
 
-    char line[4096]; 
+    char line[4096]; //character array to read and store one line from csv. temporary buffer
     char *token;
     int n_stocks = 0;
 
@@ -47,11 +47,11 @@ int main() {
     char *stock_names[MAX_STOCKS] = {"AAPL", "AMZN", "GOOGL", "JPM", "MSFT"};
 
 
-    // Read header
-    if (fgets(line, sizeof(line), fp)) {
-        // Expecting: date,AAPL,AMZN,GOOGL,JPM,MSFT
-        token = strtok(line, ","); // "date"
-        while ((token = strtok(NULL, ",")) != NULL) {
+    //reading the header
+    if (fgets(line, sizeof(line), fp)) { //read first line 
+        
+        token = strtok(line, ","); //split into tokens. ignore 'DATE'.
+        while ((token = strtok(NULL, ",")) != NULL) { // read other tokens/stocks in header
             n_stocks++;
             if (n_stocks > MAX_STOCKS) {
                 printf("Too many stocks in header; max supported is %d\n", MAX_STOCKS);
@@ -66,9 +66,9 @@ int main() {
         return 1;
     }
 
-    // Read prices up to MAX_DAYS lines
+    //read prices
     while (fgets(line, sizeof(line), fp) && day_count < MAX_DAYS) {
-        token = strtok(line, ","); // date
+        token = strtok(line, ","); //igone dates in first column
         for (int i = 0; i < n_stocks; i++) {
             token = strtok(NULL, ",");
             if (!token) {
@@ -89,15 +89,15 @@ int main() {
         return 1;
     }
 
-    // Calculate daily simple returns
-    for (int i = 1; i < day_count; i++) {
-        for (int j = 0; j < n_stocks; j++) {
-            returns[i-1][j] = (prices[i][j] - prices[i-1][j]) / prices[i-1][j];
+    // Calculate daily returns
+    for (int i = 1; i < day_count; i++) { 
+        for (int j = 0; j < n_stocks; j++) { //ith day, jth company
+            returns[i-1][j] = (prices[i][j] - prices[i-1][j]) / prices[i-1][j];//today - yesterday
         }
     }
     int return_days = day_count - 1;
 
-    // Calculate mean daily returns
+   //calculate mean return for eack stock j
     double mean_returns[MAX_STOCKS];
     for (int j = 0; j < n_stocks; j++) {
         double sum = 0.0;
@@ -129,7 +129,7 @@ int main() {
     srand(time(NULL));
 
     double best_min_risk = 1e9; // this is a much latger number. during first simulation this number will be replaced.
-    double best_max_return = -1e9;
+    double best_max_return = -1e9; //assuming the worst case
     double best_max_sharpe = -1e9;
 
     double weights_min_risk[MAX_STOCKS]; // weights that give minimum risk
@@ -149,9 +149,9 @@ int main() {
 
         double sharpe = (ret - RISK_FREE_RATE) / risk;
 
-        if (risk < best_min_risk) {
+        if (risk < best_min_risk) { 
             best_min_risk = risk;
-            memcpy(weights_min_risk, weights, sizeof(weights)); //compare current portfolio with previous 
+            memcpy(weights_min_risk, weights, sizeof(weights)); //compare current portfolio with previous and save to the memory 
         }
 
         if (ret > best_max_return) {

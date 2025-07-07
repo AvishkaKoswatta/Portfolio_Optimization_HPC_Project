@@ -1,5 +1,3 @@
-![Portfolio Optimization](https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Portfolio_Optimization_Example.png/640px-Portfolio_Optimization_Example.png)
-
 ## Portfolio optimization using Monte Carlo simulation in C
 
 This project performs portfolio optimization using the Monte Carlo simulation technique. It aims to identify the optimal allocation of assets (stocks) that minimizes risk, maximizes return, or maximizes the Sharpe ratio.
@@ -100,12 +98,12 @@ After 100,000 simulations, the best portfolios for each criterion are reported.
 
 2. **Compile the code:**
    ```bash
-   gcc main.c -o portfolio -lm
+   gcc serial.c -o serial -lm
    ```
 
 3. **Run the program:**
    ```bash
-   ./portfolio
+   ./seral
    ```
 
 ---
