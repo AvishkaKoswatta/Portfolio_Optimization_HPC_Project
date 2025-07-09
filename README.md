@@ -118,3 +118,9 @@ gcc -fopenmp openmp.c -o openmp -lm
 
 
 gcc serial.c -o /home/avishka/HPC/project/portfolio/Portfolio_Optimization_HPC_Project/executables/serial -lm
+
+mpicc mpi.c -o /home/avishka/HPC/project/portfolio/Portfolio_Optimization_HPC_Project/executables/mpi -lm
+
+gcc -fopenmp openmp.c -o /home/avishka/HPC/project/portfolio Portfolio_Optimization_HPC_Project/executables/openmp -lm
+
+mpicc -fopenmp hybrid.c -o /home/avishka/HPC/project/portfolio Portfolio_Optimization_HPC_Project/executables/hybrid -lm
