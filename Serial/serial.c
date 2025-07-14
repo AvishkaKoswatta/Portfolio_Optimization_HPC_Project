@@ -6,7 +6,7 @@
 
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
-#define SIMULATIONS 1000000
+#define SIMULATIONS 10000000
 #define RISK_FREE_RATE 0.01 // A fixed value used in sharp ratio
 #define TRADING_DAYS 252
 
@@ -60,7 +60,7 @@ int main() {
                 return 1;
             }
         }
-        printf("Number of stocks detected: %d\n", n_stocks);
+        // printf("Number of stocks detected: %d\n", n_stocks);
     } else {
         printf("File is empty\n");
         fclose(fp);
@@ -83,7 +83,7 @@ int main() {
     }
     fclose(fp);
 
-    printf("Read %d days of price data\n", day_count);
+    // printf("Read %d days of price data\n", day_count);
 
     if (day_count < 2) {
         printf("Not enough data to calculate returns\n");
@@ -166,15 +166,15 @@ int main() {
         }
     }
 
-    printf("\nMinimum Risk Portfolio:\n");
-    for (int i = 0; i < n_stocks; i++)
-        printf("Stock %d weight: %.4f\n", i+1, weights_min_risk[i]);
-    printf("Risk (Std Dev): %.4f\n", best_min_risk);
+    // printf("\nMinimum Risk Portfolio:\n");
+    // for (int i = 0; i < n_stocks; i++)
+    //     printf("Stock %d weight: %.4f\n", i+1, weights_min_risk[i]);
+    // printf("Risk (Std Dev): %.4f\n", best_min_risk);
 
-    printf("\nMaximum Return Portfolio:\n");
-    for (int i = 0; i < n_stocks; i++)
-        printf("Stock %d weight: %.4f\n", i+1, weights_max_return[i]);
-    printf("Return: %.4f\n", best_max_return);
+    // printf("\nMaximum Return Portfolio:\n");
+    // for (int i = 0; i < n_stocks; i++)
+    //     printf("Stock %d weight: %.4f\n", i+1, weights_max_return[i]);
+    // printf("Return: %.4f\n", best_max_return);
 
     // printf("\nMaximum Sharpe Ratio Portfolio:\n");
     // for (int i = 0; i < n_stocks; i++)

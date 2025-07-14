@@ -186,7 +186,7 @@
 
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
-#define SIMULATIONS 1000000 //simulations will be divide for threads
+#define SIMULATIONS 10000000 //simulations will be divide for threads
 #define RISK_FREE_RATE 0.01
 #define TRADING_DAYS 252
 
@@ -221,6 +221,7 @@ double rmse(double *a, double *b, int n) {
 
 
 int main() {
+    // omp_set_num_threads(8);
     double start_time = omp_get_wtime();
     FILE *fp = fopen("/home/avishka/HPC/project/Portfolio_Optimization_HPC_Project/Data/new_all_stocks_5yr.csv", "r");
     if (!fp) {
@@ -247,7 +248,7 @@ int main() {
                 return 1;
             }
         }
-        printf("Number of stocks detected: %d\n", n_stocks);
+        // printf("Number of stocks detected: %d\n", n_stocks);
     } else {
         printf("File is empty\n");
         fclose(fp);
@@ -269,7 +270,7 @@ int main() {
     }
     fclose(fp);
 
-    printf("Read %d days of price data\n", day_count);
+    // printf("Read %d days of price data\n", day_count);
 
     if (day_count < 2) {
         printf("Not enough data to calculate returns\n");

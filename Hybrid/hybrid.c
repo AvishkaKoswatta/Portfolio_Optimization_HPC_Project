@@ -8,7 +8,7 @@
 
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
-#define SIMULATIONS 1000000
+#define SIMULATIONS 10000000
 #define RISK_FREE_RATE 0.01
 #define TRADING_DAYS 252
 
@@ -44,6 +44,8 @@ double rmse(double *a, double *b, int n) {
 
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
+
+    // omp_set_num_threads(8);
 
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
