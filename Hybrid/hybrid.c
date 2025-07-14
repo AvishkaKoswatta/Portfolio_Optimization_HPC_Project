@@ -8,7 +8,7 @@
 
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
-#define SIMULATIONS 100000
+#define SIMULATIONS 1000000
 #define RISK_FREE_RATE 0.01
 #define TRADING_DAYS 252
 
@@ -31,6 +31,16 @@ double portfolio_variance(double weights[], double cov[][MAX_STOCKS], int n) {
             var += weights[i] * weights[j] * cov[i][j];
     return var;
 }
+
+double rmse(double *a, double *b, int n) {
+    double sum_sq = 0.0;
+    for (int i = 0; i < n; i++) {
+        double diff = a[i] - b[i];
+        sum_sq += diff * diff;
+    }
+    return sqrt(sum_sq / n);
+}
+
 
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
@@ -163,6 +173,34 @@ int main(int argc, char *argv[]) {
         double end_time = MPI_Wtime();
         printf("\nTotal Execution Time (Hybrid MPI + OpenMP): %.6f seconds\n", end_time - start_time);
     }
+
+    if (rank == 0) {
+        char *stock_names[MAX_STOCKS] = {"APPLE", "AMAZON", "GOOGLE", "JPMorgan", "MICROSOFT"};
+    
+        printf("\nMaximum Sharpe Ratio Portfolio Allocation:\n");
+        for (int i = 0; i < n_stocks; i++)
+            printf("%-8s: %.2f%%\n", stock_names[i], local_weights_sharpe[i] * 100);
+    
+        // Read serial weights
+        double serial_weights[MAX_STOCKS];
+        FILE *fin_serial = fopen("/home/avishka/HPC/project/portfolio/Portfolio_Optimization_HPC_Project/Accuracy/weights_serial.txt", "r");
+        if (!fin_serial) {
+            printf("Error: Could not open weights_serial.txt\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+        for (int i = 0; i < n_stocks; i++) {
+            fscanf(fin_serial, "%lf", &serial_weights[i]);
+        }
+        fclose(fin_serial);
+    
+        // Calculate RMSE
+        double accuracy = rmse(local_weights_sharpe, serial_weights, n_stocks);
+        printf("\nAccuracy (RMSE compared to Serial): %.10f\n", accuracy);
+    
+        double end_time = MPI_Wtime();
+        printf("\nTotal Execution Time (Hybrid MPI + OpenMP): %.6f seconds\n", end_time - start_time);
+    }
+    
 
     MPI_Finalize();
     return 0;

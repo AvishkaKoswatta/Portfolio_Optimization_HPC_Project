@@ -186,7 +186,7 @@
 
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
-#define SIMULATIONS 100000 //simulations will be divide for threads
+#define SIMULATIONS 1000000 //simulations will be divide for threads
 #define RISK_FREE_RATE 0.01
 #define TRADING_DAYS 252
 
@@ -209,6 +209,16 @@ double portfolio_variance(double weights[], double cov[][MAX_STOCKS], int n) {
             var += weights[i] * weights[j] * cov[i][j];
     return var;
 }
+
+double rmse(double *a, double *b, int n) {
+    double sum_sq = 0.0;
+    for (int i = 0; i < n; i++) {
+        double diff = a[i] - b[i];
+        sum_sq += diff * diff;
+    }
+    return sqrt(sum_sq / n);
+}
+
 
 int main() {
     double start_time = omp_get_wtime();
@@ -372,6 +382,24 @@ int main() {
     // printf("Sharpe Ratio: %.4f\n", best_max_sharpe);
     double end_time = omp_get_wtime(); // Stop timer
     printf("\nTotal Execution Time: %.6f seconds\n", end_time - start_time);
+
+    double serial_weights[MAX_STOCKS];
+    FILE *fin_serial = fopen("/home/avishka/HPC/project/portfolio/Portfolio_Optimization_HPC_Project/Accuracy/weights_serial.txt", "r");
+    if (!fin_serial) {
+    printf("Error: Could not open weights_serial.txt\n");
+    return 1;
+    }
+    for (int i = 0; i < n_stocks; i++) {
+    fscanf(fin_serial, "%lf", &serial_weights[i]);
+    }
+    fclose(fin_serial);
+    
+    
+    double error = rmse(weights_max_sharpe, serial_weights, n_stocks);
+    printf("\nRMSE between serial and parallel Sharpe weights: %.10f\n", error);
+
+    
+
 
     return 0;
 }

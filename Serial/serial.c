@@ -6,7 +6,7 @@
 
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
-#define SIMULATIONS 100000
+#define SIMULATIONS 1000000
 #define RISK_FREE_RATE 0.01 // A fixed value used in sharp ratio
 #define TRADING_DAYS 252
 
@@ -190,5 +190,18 @@ for (int i = 0; i < n_stocks; i++) {
     clock_t end_time = clock();  // Stop measuring execution time
     double time_taken = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
     printf("\nTotal Execution Time: %.6f seconds\n", time_taken);
+
+    FILE *fout_serial = fopen("/home/avishka/HPC/project/portfolio/Portfolio_Optimization_HPC_Project/Accuracy/weights_serial.txt", "w");
+    if (!fout_serial) {
+        perror("Error opening weights_serial.txt");
+        return 1;
+    }
+    for (int i = 0; i < n_stocks; i++) {
+        fprintf(fout_serial, "%.10f\n", weights_max_sharpe[i]);
+    }
+    fclose(fout_serial);
+    printf("Weights written successfully to file.\n");
+
+
     return 0;
 }

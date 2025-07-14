@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, jsonify
 import subprocess
 import os
+import re 
 
 app = Flask(__name__)
 
@@ -32,10 +33,18 @@ def run_program():
 
     try:
         output = subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode()
+        rmse_match = re.search(r'RMSE.*?:\s*([0-9.]+)', output)
+        # rmse_match = re.search(r'RMSE.*?:\s*([0-9.]+)', output, re.IGNORECASE)
+        rmse_value = float(rmse_match.group(1)) if rmse_match else None
+
     except subprocess.CalledProcessError as e:
         output = f"Error:\n{e.output.decode()}"
 
-    return jsonify({"output": output})
+    return jsonify({
+    "output": output,
+    "rmse": rmse_value
+    })
+
 
 
 if __name__ == "__main__":

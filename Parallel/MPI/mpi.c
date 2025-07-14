@@ -26,7 +26,7 @@
 
 #define MAX_STOCKS 5
 #define MAX_DAYS 1200
-#define SIMULATIONS 100000
+#define SIMULATIONS 1000000
 #define RISK_FREE_RATE 0.01
 #define TRADING_DAYS 252
 
@@ -205,6 +205,29 @@ int main(int argc, char *argv[]) {
         double end_time = MPI_Wtime();
         printf("\nTotal Execution Time: %.6f seconds\n", end_time - start_time);
     }
+
+    FILE *fserial = fopen("/home/avishka/HPC/project/portfolio/Portfolio_Optimization_HPC_Project/Accuracy/weights_serial.txt", "r");
+    if (!fserial) {
+        perror("Error opening weights_serial.txt");
+    } else {
+        double serial_weights[MAX_STOCKS];
+        for (int i = 0; i < n_stocks; i++) {
+            fscanf(fserial, "%lf", &serial_weights[i]);
+        }
+        fclose(fserial);
+
+        double rmse = 0.0;
+        for (int i = 0; i < n_stocks; i++) {
+            double diff = serial_weights[i] - local_weights_max_sharpe[i];
+            rmse += diff * diff;
+        }
+        rmse = sqrt(rmse / n_stocks);
+        if (rank == 0) {
+            printf("\nAccuracy (RMSE compared to Serial): %.10f\n", rmse);
+        }
+        
+    }
+
 
     MPI_Finalize();
     return 0;
