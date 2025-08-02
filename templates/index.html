@@ -117,7 +117,7 @@
       document.getElementById("accuracy-value").textContent = "";
       document.getElementById("execTime").textContent = "";
 
-      fetch(`/run?mode=${mode}`)
+      fetch(`/run?mode=${mode}`) //capture flask api call
         .then(res => res.json())
         .then(data => {
           document.getElementById("output").textContent = data.output;

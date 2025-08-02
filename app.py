@@ -30,9 +30,9 @@ def run_program():
             cmd.append(part)
         else:
             cmd.append(os.path.join(EXEC_PATH, part))
-
+# run the executable
     try:
-        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode()
+        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode() 
         rmse_match = re.search(r'RMSE.*?:\s*([0-9.]+)', output)
         # rmse_match = re.search(r'RMSE.*?:\s*([0-9.]+)', output, re.IGNORECASE)
         rmse_value = float(rmse_match.group(1)) if rmse_match else None

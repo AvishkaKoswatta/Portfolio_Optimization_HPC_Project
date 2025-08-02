@@ -116,6 +116,7 @@ gcc -fopenmp openmp.c -o openmp -lm
 
 
 
+python3 app.py
 
 gcc serial.c -o /home/avishka/HPC/project/portfolio/Portfolio_Optimization_HPC_Project/executables/serial -lm
 

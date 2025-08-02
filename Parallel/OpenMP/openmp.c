@@ -221,7 +221,7 @@ double rmse(double *a, double *b, int n) {
 
 
 int main() {
-    // omp_set_num_threads(8);
+    omp_set_num_threads(2);
     double start_time = omp_get_wtime();
     FILE *fp = fopen("/home/avishka/HPC/project/Portfolio_Optimization_HPC_Project/Data/new_all_stocks_5yr.csv", "r");
     if (!fp) {

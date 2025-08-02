@@ -1,22 +1,3 @@
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
-// #include <math.h>
-// #include <mpi.h>
-// #include <time.h>
-
-// #define MAX_STOCKS 5
-// #define MAX_DAYS 1200
-// #define SIMULATIONS 100000
-// #define RISK_FREE_RATE 0.01
-// #define TRADING_DAYS 252
-
-// int main(int argc, char *argv[]) {
-    
-
-// }
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,11 +32,11 @@ double portfolio_variance(double weights[], double cov[][MAX_STOCKS], int n) {
 }
 
 int main(int argc, char *argv[]) {
-    MPI_Init(&argc, &argv);
+    MPI_Init(&argc, &argv); //start mpi
 
     int rank, size;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank); //process id
+    MPI_Comm_size(MPI_COMM_WORLD, &size);//total no of processes
 
     double start_time = MPI_Wtime();
 
@@ -64,7 +45,7 @@ int main(int argc, char *argv[]) {
     double prices[MAX_DAYS][MAX_STOCKS], returns[MAX_DAYS - 1][MAX_STOCKS];
     int day_count = 0, n_stocks = 0;
 
-    if (rank == 0) {
+    if (rank == 0) { //only rank 0 reads csv
         fp = fopen("/home/avishka/HPC/project/Portfolio_Optimization_HPC_Project/Data/new_all_stocks_5yr.csv", "r");
         if (!fp) {
             printf("Error opening file\n");
@@ -93,23 +74,24 @@ int main(int argc, char *argv[]) {
         }
         fclose(fp);
     }
-
+    //broadcast number of stocks, price matrix
     MPI_Bcast(&n_stocks, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&day_count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(prices, MAX_DAYS * MAX_STOCKS, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
+    //computing daily returns
     int return_days = day_count - 1;
     for (int i = 1; i < day_count; i++)
         for (int j = 0; j < n_stocks; j++)
             returns[i - 1][j] = (prices[i][j] - prices[i - 1][j]) / prices[i - 1][j];
-
+    //computing mean returns
     double mean_returns[MAX_STOCKS] = {0};
     for (int j = 0; j < n_stocks; j++) {
         double sum = 0.0;
         for (int i = 0; i < return_days; i++) sum += returns[i][j];
         mean_returns[j] = sum / return_days;
     }
-
+    //covariance matrix of returns
     double cov[MAX_STOCKS][MAX_STOCKS] = {0};
     for (int i = 0; i < n_stocks; i++) {
         for (int j = 0; j < n_stocks; j++) {
@@ -138,10 +120,11 @@ int main(int argc, char *argv[]) {
     double local_weights_max_return[MAX_STOCKS];
     double local_weights_max_sharpe[MAX_STOCKS];
 
+    //divide the work. Each process runs this loop 2.5 million times
     for (int sim = 0; sim < sims_per_process; sim++) {
         double weights[MAX_STOCKS];
         for (int i = 0; i < n_stocks; i++)
-            weights[i] = (double)rand_r(&seed) / RAND_MAX;
+            weights[i] = (double)rand_r(&seed) / RAND_MAX; // we need 5 random numbers upto 1
 
         normalize_weights(weights, n_stocks);
 
@@ -152,7 +135,7 @@ int main(int argc, char *argv[]) {
 
         if (risk < local_best_min_risk) {
             local_best_min_risk = risk;
-            memcpy(local_weights_min_risk, weights, sizeof(weights));
+            memcpy(local_weights_min_risk, weights, sizeof(weights)); //best one so far
         }
         if (ret > local_best_max_return) {
             local_best_max_return = ret;
@@ -171,6 +154,7 @@ int main(int argc, char *argv[]) {
     double global_weights_max_return[MAX_STOCKS];
     double global_weights_max_sharpe[MAX_STOCKS];
 
+    //struct to finf the value and waht rank achieved it together as one record
     struct {
         double value;
         int rank;
@@ -186,6 +170,7 @@ int main(int argc, char *argv[]) {
         int rank;
     } local_sharpe = {local_best_max_sharpe, rank}, best_sharpe;
 
+    //globally best (min risk, max return, max Sharpe) across all ranks
     MPI_Allreduce(&local_risk, &best_risk, 1, MPI_DOUBLE_INT, MPI_MINLOC, MPI_COMM_WORLD);
     MPI_Allreduce(&local_ret, &best_ret, 1, MPI_DOUBLE_INT, MPI_MAXLOC, MPI_COMM_WORLD);
     MPI_Allreduce(&local_sharpe, &best_sharpe, 1, MPI_DOUBLE_INT, MPI_MAXLOC, MPI_COMM_WORLD);
